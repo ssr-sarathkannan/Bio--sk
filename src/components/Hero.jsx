@@ -49,7 +49,8 @@ function Avatar() {
           className="w-full h-full object-cover"
           onError={(e) => {
             e.currentTarget.style.display = 'none'
-            e.currentTarget.nextElementSibling.style.display = 'flex'
+            const fallback = e.currentTarget.nextElementSibling
+            if (fallback instanceof HTMLElement) fallback.style.display = 'flex'
           }}
         />
         <div
@@ -93,6 +94,36 @@ function TechTicker() {
         ))}
       </div>
     </div>
+  )
+}
+
+function CodeWindow() {
+  const lines = [
+    ['const', ' portfolio', ' = {'],
+    ['  craft:', " 'intentional',"],
+    ['  stack:', " ['React', 'Node'],"],
+    ['  status:', " 'shipping'"],
+    ['}'],
+  ]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 22, rotate: 2 }}
+      animate={{ opacity: 1, y: 0, rotate: 0 }}
+      transition={{ delay: 1.45, duration: 0.7, ease: 'easeOut' }}
+      className="code-window"
+    >
+      <div className="code-window-bar"><span><i /><i /><i /></span><span>portfolio.config.js</span><span>JS</span></div>
+      <pre className="code-window-body">
+        {lines.map((line, index) => (
+          <motion.code key={index} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.8 + index * .16, duration: .3 }}>
+            <b>{String(index + 1).padStart(2, '0')}</b><span className={index === 0 ? 'code-keyword' : index === 4 ? 'code-bracket' : 'code-property'}>{line[0]}</span>{line[1] && <span className="code-value">{line[1]}</span>}{line[2] && <span className="code-bracket">{line[2]}</span>}
+          </motion.code>
+        ))}
+        <code className="code-cursor-line"><b>06</b><span className="code-cursor" /></code>
+      </pre>
+      <div className="code-window-footer"><span><i /> main</span><span>Ln 6, Col 1</span><span>UTF-8</span></div>
+    </motion.div>
   )
 }
 
@@ -186,8 +217,8 @@ export default function Hero() {
               transition={{ delay: 2.35, duration: 0.6, ease: 'easeOut' }}
               className="mt-6 max-w-xl text-base sm:text-lg text-muted leading-relaxed"
             >
-              4+ years building scalable web and mobile applications — from
-              React interfaces to Node.js APIs — for institutional, startup,
+              4+ years building scalable web and mobile applications - from
+              React interfaces to Node.js APIs - for institutional, startup,
               and enterprise teams.
             </motion.p>
 
@@ -205,7 +236,7 @@ export default function Hero() {
                 }}
                 className="px-5 py-3 rounded bg-green text-bg font-mono text-sm font-semibold hover:brightness-110 transition"
               >
-                view changelog →
+                view projects
               </a>
               <a
                 href="#contact"
@@ -220,7 +251,10 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          <Avatar />
+          <div className="flex flex-col items-center gap-8 lg:items-start">
+            <Avatar />
+            <CodeWindow />
+          </div>
         </div>
 
         <TechTicker />

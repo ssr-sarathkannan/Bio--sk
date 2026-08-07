@@ -12,8 +12,8 @@ export default function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault()
     const subject = encodeURIComponent(`Portfolio enquiry from ${form.name || 'someone'}`)
-    const body = encodeURIComponent(`${form.message}\n\n— ${form.name} (${form.email})`)
-    window.location.href = `mailto:hello@example.com?subject=${subject}&body=${body}`
+    const body = encodeURIComponent(`${form.message}\n\n- ${form.name} (${form.email})`)
+    window.location.href = `mailto:sk123sarath@gmail.com?subject=${subject}&body=${body}`
     setSent(true)
   }
 
@@ -38,6 +38,7 @@ export default function Contact() {
         >
           Let's build something.
         </motion.h2>
+        <p className="-mt-8 mb-8 text-center text-sm text-muted">Open to full-stack roles, product collaborations, and institutional digital projects.</p>
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}

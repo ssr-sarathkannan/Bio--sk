@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
 import { NAV_ITEMS } from '../data/content'
 
 export default function Nav() {
   const [active, setActive] = useState('about')
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -28,6 +30,7 @@ export default function Nav() {
 
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    setMenuOpen(false)
   }
 
   return (
@@ -41,6 +44,7 @@ export default function Nav() {
     >
       <nav className="max-w-5xl mx-auto px-6 sm:px-8 h-16 flex items-center justify-between font-mono text-sm">
         <button
+          type="button"
           onClick={() => scrollTo('top')}
           className="text-text hover:text-green transition-colors"
         >
@@ -54,6 +58,7 @@ export default function Nav() {
           {NAV_ITEMS.map((item) => (
             <li key={item.id}>
               <button
+                type="button"
                 onClick={() => scrollTo(item.id)}
                 className={`relative px-3 py-2 rounded transition-colors ${
                   active === item.id ? 'text-green' : 'text-muted hover:text-text'
@@ -67,13 +72,41 @@ export default function Nav() {
         </ul>
 
         <button
+          type="button"
           onClick={() => scrollTo('contact')}
           className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-border text-muted hover:text-green hover:border-green/50 transition-colors"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
           open to work
         </button>
+        <button
+          type="button"
+          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="grid h-9 w-9 place-items-center rounded border border-border text-muted transition hover:border-green/50 hover:text-green sm:hidden"
+        >
+          {menuOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
       </nav>
+      {menuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="border-t border-border bg-bg/95 px-6 py-4 backdrop-blur-xl sm:hidden"
+        >
+          <ul className="mx-auto grid max-w-5xl gap-1">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.id}>
+                <button type="button" onClick={() => scrollTo(item.id)} className={`w-full rounded px-3 py-3 text-left font-mono text-sm transition ${active === item.id ? 'bg-green/10 text-green' : 'text-muted hover:bg-surface hover:text-text'}`}>
+                  {active === item.id && <span className="mr-1 text-dim">./</span>}{item.label}
+                </button>
+              </li>
+            ))}
+            <li><button type="button" onClick={() => scrollTo('contact')} className="mt-2 w-full rounded bg-green px-3 py-3 text-left font-mono text-sm font-semibold text-bg">Let's work together</button></li>
+          </ul>
+        </motion.div>
+      )}
     </motion.header>
   )
 }
