@@ -14,6 +14,8 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+
+  
   useEffect(() => {
     const sections = NAV_ITEMS.map((n) => document.getElementById(n.id)).filter(Boolean)
     const observer = new IntersectionObserver(
@@ -72,6 +74,8 @@ export default function Nav() {
         </ul>
 
         <button
+
+
           type="button"
           onClick={() => scrollTo('contact')}
           className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-border text-muted hover:text-green hover:border-green/50 transition-colors"
@@ -89,7 +93,7 @@ export default function Nav() {
           {menuOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
       </nav>
-      {menuOpen && (
+      {menuOpen && (  
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}

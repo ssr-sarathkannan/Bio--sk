@@ -93,7 +93,7 @@ export default function About() {
                   <dt className="text-dim">{fact.label}</dt>
                   <dd className="text-text">{fact.value}</dd>
                 </motion.div>
-              ))}
+              ))}   
             </dl>
           </motion.div>
         </div>
