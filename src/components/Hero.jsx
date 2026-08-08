@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Code2, Database, Cloud, Smartphone, Braces, PenTool } from 'lucide-react'
 import { useTypewriter } from '../hooks/useTypewriter'
 import { PROFILE, TECH_TICKER } from '../data/content'
+
+const AVATAR_IMAGE = '/profile1.jpg'
 
 const BOOT_LINES = [
   '> initializing profile...',
@@ -18,19 +21,21 @@ const ORBIT_BADGES = [
 ]
 
 function Avatar() {
+  const [imageError, setImageError] = useState(false)
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.7, delay: 0.3, ease: 'easeOut' }}
-      className="relative w-56 h-56 sm:w-64 sm:h-64 mx-auto lg:mx-0 shrink-0"
+      className="hero-avatar"
     >
       {/* rotating gradient ring */}
       <motion.div
         aria-hidden
         animate={{ rotate: 360 }}
         transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-        className="absolute -inset-2 rounded-full"
+        className="avatar-ring"
         style={{
           background:
             'conic-gradient(from 0deg, #5FD9A4, #F2A65A, #6FA8DC, #5FD9A4)',
@@ -42,20 +47,18 @@ function Avatar() {
       />
 
       {/* photo / monogram */}
-      <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-bg bg-surface flex items-center justify-center">
+      <div className="avatar-photo">
         <img
-          src="/profile.jpg"
+          src={AVATAR_IMAGE}
           alt={PROFILE.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none'
-            const fallback = e.currentTarget.nextElementSibling
-            if (fallback instanceof HTMLElement) fallback.style.display = 'flex'
-          }}
+          loading="eager"
+          decoding="async"
+          className={`avatar-img ${imageError ? 'hidden' : ''}`}
+          onError={() => setImageError(true)}
         />
         <div
-          className="w-full h-full absolute inset-0 items-center justify-center font-mono font-bold text-5xl text-green"
-          style={{ display: 'none', background: 'radial-gradient(circle at 30% 20%, #1B1F28, #0F1115)' }}
+          className={`avatar-fallback ${imageError ? 'visible' : ''}`}
+          aria-hidden={!imageError}
         >
           {PROFILE.initials}
         </div>
@@ -72,7 +75,7 @@ function Avatar() {
             scale: { delay: 1.8 + delay * 0.15, duration: 0.4 },
             y: { delay: 2.2 + delay * 0.15, duration: 3 + i * 0.3, repeat: Infinity, ease: 'easeInOut' },
           }}
-          className="absolute w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center shadow-lg"
+          className="orbit-badge"
           style={style}
         >
           <Icon size={18} className="text-green" />
@@ -141,7 +144,7 @@ export default function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-screen flex items-center bg-grid bg-scanlines overflow-hidden pt-20"
+      className="hero relative min-h-screen flex items-center bg-grid bg-scanlines overflow-hidden pt-20"
     >
       <div
         className="pointer-events-none absolute inset-0"
@@ -217,8 +220,8 @@ export default function Hero() {
               transition={{ delay: 2.35, duration: 0.6, ease: 'easeOut' }}
               className="mt-6 max-w-xl text-base sm:text-lg text-muted leading-relaxed"
             >
-              4+ years building scalable web and mobile applications - from
-              React interfaces to Node.js APIs - for institutional, startup,
+              4+ years building scalable web and mobile applications — from
+              React interfaces to Node.js APIs — for institutional, startup,
               and enterprise teams.
             </motion.p>
 
@@ -236,7 +239,7 @@ export default function Hero() {
                 }}
                 className="px-5 py-3 rounded bg-green text-bg font-mono text-sm font-semibold hover:brightness-110 transition"
               >
-                view projects
+                view changelog →
               </a>
               <a
                 href="#contact"

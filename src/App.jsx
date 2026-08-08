@@ -1,31 +1,36 @@
-import Nav from './components/Nav'
-import Hero from './components/Hero'
-import About from './components/About'
-import Experience from './components/Experience'
-import Skills from './components/Skills'
-import ClientValue from './components/ClientValue'
-import Services from './components/Services'
-import Projects from './components/Projects'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
-import AmbientBackground from './components/AmbientBackground'
+import { useRef, useState } from 'react'
+import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
+import { ArrowDownRight, ArrowUpRight, MapPin, MoveRight } from 'lucide-react'
+import { EXPERIENCE, PROFILE, PROJECTS } from './data/content'
 
-export default function App() {
-  return (
-    <div className="relative isolate min-h-screen overflow-hidden bg-bg text-text">
-      <AmbientBackground />
-      <Nav />
-      <main className="relative z-10">
-        <Hero />
-        <About />
-        <Experience />
-        <Skills />
-        <Services />
-        <ClientValue />
-        <Projects />
-        <Contact />
-      </main>
-      <div className="relative z-10"><Footer /></div>
-    </div>
-  )
+const ABOUT_IMAGE = '/profile1.jpg'
+
+const images = {
+  alumni: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1500&q=90', visitors: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1500&q=90', 'world-school': 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1500&q=90', careers: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1500&q=90', 'kmct-web-ecosystem': 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1500&q=90', indutech: 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1500&q=90', leap: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1500&q=90', medics: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=1500&q=90', milkovi: 'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?auto=format&fit=crop&w=1500&q=90', surveillance: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1500&q=90', 'transaction-security': 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1500&q=90',
 }
+
+const links = [['Work', 'work'], ['About', 'about'], ['Experience', 'experience'], ['Contact', 'contact']]
+const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+
+function Nav() { return <header><a className="brand" href="#top" onClick={(e) => { e.preventDefault(); scrollTo('top') }}>SARATH<span>®</span></a><nav>{links.map(([name, id]) => <button key={id} onClick={() => scrollTo(id)}>{name}</button>)}</nav><button className="available" onClick={() => scrollTo('contact')}><i /> Available for work</button></header> }
+
+function ScrollProgress() { const { scrollYProgress } = useScroll(); return <motion.div className="scroll-progress" style={{ scaleX: scrollYProgress }} /> }
+
+function Hero() {
+  const { scrollYProgress } = useScroll(); const y = useTransform(scrollYProgress, [0, .5], [0, 120])
+  return <section id="top" className="hero"><div className="hero-top"><motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .35 }}>Independent developer<br />& digital maker</motion.p><motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .45 }}>Based in India<br />working worldwide</motion.p></div><div className="hero-word"><motion.span style={{ y }} initial={{ opacity: 0, y: 80, rotateX: -75 }} animate={{ opacity: 1, y: 0, rotateX: 0 }} transition={{ duration: 1.15, ease: [.16, 1, .3, 1] }}>SARATH</motion.span></div><motion.div className="hero-bottom" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .8, duration: .7 }}><p>I create crisp, human-centred web and mobile products for teams with something meaningful to build.</p><button onClick={() => scrollTo('work')} aria-label="View selected work"><ArrowDownRight /></button></motion.div><div className="hero-orbit">Scroll to explore <span>↘</span></div><div className="hero-grain" /></section>
+}
+
+function ProjectCard({ project, index, active, onSelect }) { const open = active === project.id; const rotateX = useSpring(useMotionValue(0), { stiffness: 210, damping: 20 }); const rotateY = useSpring(useMotionValue(0), { stiffness: 210, damping: 20 }); const handleMove = (event) => { const bounds = event.currentTarget.getBoundingClientRect(); rotateX.set(((event.clientY - bounds.top) / bounds.height - .5) * -7); rotateY.set(((event.clientX - bounds.left) / bounds.width - .5) * 7) }; const reset = () => { rotateX.set(0); rotateY.set(0) }; return <motion.article layout style={{ rotateX, rotateY, transformPerspective: 1100 }} className={`work-card ${open ? 'open' : ''}`} onPointerMove={handleMove} onPointerLeave={reset} onClick={() => onSelect(project.id)} initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .16 }} transition={{ duration: .55, delay: Math.min(index * .08, .24) }}><div className="card-image"><img src={images[project.id]} alt="" /><span className="image-index">0{index + 1}</span><span className="image-type">{project.category}</span></div><div className="card-copy"><div><p>{project.client}</p><h3>{project.name}</h3></div><ArrowUpRight className="card-arrow" size={20} /></div><AnimatePresence>{open && <motion.div className="expanded-copy" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}><p>{project.summary}</p><div><span>Impact</span><b>{project.outcome}</b></div><ul>{project.highlights.map((item) => <li key={item}>{item}</li>)}</ul></motion.div>}</AnimatePresence></motion.article> }
+
+function ScrollTotem() { const ref = useRef(null); const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] }); const rotateX = useTransform(scrollYProgress, [0, .5, 1], [48, 0, -42]); const rotateZ = useTransform(scrollYProgress, [0, 1], [-10, 12]); const y = useTransform(scrollYProgress, [0, 1], [130, -140]); const scale = useTransform(scrollYProgress, [0, .45, 1], [.72, 1.06, .84]); return <section ref={ref} className="totem-stage"><div className="totem-copy"><p className="label">Motion in context</p><h2>Depth with<br /><em>purpose.</em></h2><p>Every movement points the eye towards the work—never away from it.</p></div><motion.div className="totem" style={{ rotateX, rotateZ, y, scale }}><div className="totem-layer layer-one">BUILD</div><div className="totem-layer layer-two">WITH</div><div className="totem-layer layer-three">INTENT</div><div className="totem-orb" /></motion.div></section> }
+
+function Work() { const [active, setActive] = useState('alumni'); const [all, setAll] = useState(false); const visible = all ? PROJECTS : PROJECTS.slice(0, 6); return <><ScrollTotem /><section id="work" className="work section"><div className="section-head"><p>(01) Selected work</p><h2>Built with clarity.<br /><em>Made to move.</em></h2><p className="section-intro">A selection of digital platforms, public experiences, and product ideas designed to make a real difference.</p></div><div className="work-grid">{visible.map((project, i) => <ProjectCard key={project.id} project={project} index={i} active={active} onSelect={setActive} />)}</div><button className="outline-button" onClick={() => setAll(!all)}>{all ? 'Show selected projects' : `Explore all ${PROJECTS.length} projects`} <MoveRight size={16} /></button></section></> }
+
+function About() { return <section id="about" className="about section"><div className="about-photo"><img src={ABOUT_IMAGE} alt="Sarath Kannan" loading="eager" decoding="async" /><span>Portrait / 2026</span></div><div className="about-copy"><p className="label">(02) A little about me</p><h2>A thoughtful maker for ambitious teams.</h2><p className="lead">I’m {PROFILE.name}, a full-stack developer focused on the small details that make digital products feel easy, useful, and worth returning to.</p><div className="about-facts"><span><strong>4+</strong>Years of experience</span><span><strong>20+</strong>Digital projects delivered</span><span><MapPin size={16} />{PROFILE.location}</span></div><a href="mailto:sk123sarath@gmail.com" className="text-link">Let’s make something good <ArrowUpRight size={17} /></a></div></section> }
+
+function Experience() { return <section id="experience" className="experience section"><p className="label">(03) The journey so far</p><h2>In good company.</h2><div className="timeline">{EXPERIENCE.map((job, i) => <motion.article key={job.hash} initial={{ opacity: 0, x: -22 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }}><span>{job.period}</span><div><h3>{job.role}</h3><p>{job.company}</p></div><b>0{i + 1}</b></motion.article>)}</div></section> }
+
+function Contact() { return <section id="contact" className="contact section"><p className="label">(04) Say hello</p><h2>Have an idea<br />worth making?</h2><a href="mailto:sk123sarath@gmail.com" className="contact-email">sk123sarath@gmail.com <ArrowUpRight /></a><div className="socials"><a href="https://www.linkedin.com" target="_blank" rel="noreferrer">↗ LinkedIn</a><a href="https://github.com" target="_blank" rel="noreferrer">↗ GitHub</a><a href="https://www.instagram.com" target="_blank" rel="noreferrer">↗ Instagram</a></div></section> }
+
+export default function App() { return <><ScrollProgress /><Nav /><main><Hero /><Work /><About /><Experience /><Contact /></main><footer><span>© 2026 Sarath Kannan</span><span>Designed and built with intent.</span><button onClick={() => scrollTo('top')}>Back to top ↑</button></footer></> }

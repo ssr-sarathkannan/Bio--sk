@@ -191,4 +191,17 @@ export const PROJECTS = [
     summary: 'Online transaction platform prototype with layered authentication, encryption, and validation controls.', outcome: 'Strengthened a digital payment journey with defence-in-depth thinking.',
     stack: ['Cybersecurity', 'Encryption', 'Authentication'], highlights: ['Three-layer protection', 'Transaction validation', 'Secure user authentication'],
   },
+  {
+    id: 'PSG Alumni Foundation', name: 'Three-Level Transaction Security', category: 'AI / Security', period: 'Academic project', client: 'Academic research', visual: 'security',
+    summary: 'Online transaction platform prototype with layered authentication, encryption, and validation controls.', outcome: 'Strengthened a digital payment journey with defence-in-depth thinking.',
+    stack: ['Cybersecurity', 'Encryption', 'Authentication'], highlights: ['Three-layer protection', 'Transaction validation', 'Secure user authentication'],
+  },
+  {
+    id: 'kmct-web-ecosystem', name: 'SCHOOL OF DESIGN', category: 'Website', period: '2024 - 2025', client: 'KMCT Group of Institutions', collaboration: 'Collaborated with Data Stone and Intersmart Technologies', visual: 'campus', featured: true,
+    summary: 'Built for Design students to showcase their work and connect with industry professionals.',
+    outcome: 'Delivered cohesive, conversion-ready web experiences across academic and healthcare audiences.',
+    stack: ['React', 'JavaScript', 'HTML5', 'CSS3', 'SEO'],
+    highlights: ['Multi-site design system', 'Institutional content experiences', 'SEO-aware delivery'],
+  }
+  
 ]
